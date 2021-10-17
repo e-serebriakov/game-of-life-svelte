@@ -5,6 +5,7 @@
 
   let canvas
   let timerId
+  let mouseClicked = false
   const height = window.innerHeight
   const width = window.innerWidth
   let unsubscribeSettingsStore = () => {}
@@ -43,14 +44,48 @@
     if (timerId) clearTimeout(timerId)
   }
 
-  const handleCanvasClick = (event) => {
-    const x = event.x
-    const y = event.y
-
+  const getRowAndColumnFromCoords = (x, y) => {
     const rowIndex = Math.floor(y / height * $settingsStore.rows)
     const columnIndex = Math.floor(x / width * $settingsStore.columns)
 
+    return {
+      rowIndex,
+      columnIndex
+    }
+  }
+
+  let lastVisitiedRow
+  let lastVisitiedColumns
+
+  const handleMouseDown = (event) => {
+    mouseClicked = true
+    const x = event.x
+    const y = event.y
+
+    const { rowIndex, columnIndex } = getRowAndColumnFromCoords(x, y)
+
+    lastVisitiedRow = rowIndex
+    lastVisitiedColumns = columnIndex
+
     toggleCellLifeState(rowIndex, columnIndex)
+  }
+
+  const handleMouseUp = (_event) => {
+    mouseClicked = false
+  }
+
+  const handleMouseMove = (event) => {
+    if (!mouseClicked) return
+
+    const x = event.x
+    const y = event.y
+    const { rowIndex, columnIndex } = getRowAndColumnFromCoords(x, y)
+
+    if (rowIndex !== lastVisitiedRow || columnIndex !== lastVisitiedColumns) {
+      toggleCellLifeState(rowIndex, columnIndex)
+      lastVisitiedRow = rowIndex
+      lastVisitiedColumns = columnIndex
+    }
   }
 
   const toggleCellLifeState = (rowIndex, columnIndex) => {
@@ -84,7 +119,13 @@
   })
 </script>
 
-<canvas class="canvas" bind:this={canvas} on:click={handleCanvasClick}></canvas>
+<canvas
+  class="canvas"
+  bind:this={canvas}
+  on:mousedown={handleMouseDown}
+  on:mousemove={handleMouseMove}
+  on:mouseup={handleMouseUp}
+></canvas>
 
 <style>
   .canvas {
