@@ -90,6 +90,13 @@ function createLifeStateStore() {
         )
       )
     },
+    toggleCellLifeState: (rowIndex, columnIndex) => {
+      update((currentState) => {
+        currentState[columnIndex][rowIndex] = currentState[columnIndex][rowIndex] === 1 ? 0 : 1
+
+        return currentState
+      })
+    },
     evolve: () => {
       update(calculateNextState)
     },

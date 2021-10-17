@@ -43,6 +43,22 @@
     if (timerId) clearTimeout(timerId)
   }
 
+  const handleCanvasClick = (event) => {
+    const x = event.x
+    const y = event.y
+
+    const rowIndex = Math.floor(y / height * $settingsStore.rows)
+    const columnIndex = Math.floor(x / width * $settingsStore.columns)
+
+    toggleCellLifeState(rowIndex, columnIndex)
+  }
+
+  const toggleCellLifeState = (rowIndex, columnIndex) => {
+    if (rowIndex <= $settingsStore.rows + 1 && columnIndex <= $settingsStore.columns + 1) {
+      lifeStateStore.toggleCellLifeState(rowIndex, columnIndex)
+    }
+  }
+
   onMount(() => {
     canvas.height = height
     canvas.width = width
@@ -68,7 +84,7 @@
   })
 </script>
 
-<canvas class="canvas" bind:this={canvas}></canvas>
+<canvas class="canvas" bind:this={canvas} on:click={handleCanvasClick}></canvas>
 
 <style>
   .canvas {
