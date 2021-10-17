@@ -1,9 +1,9 @@
 <script>
-  export let onChange = (_value) => {};
-  export let value = 1;
+  export let onChange = (_value) => {}
+  export let value = 1
 
   const handleChange = (event) => {
-    const value = parseInt(event.target.value, 10);
+    const value = parseInt(event.target.value, 10)
     onChange(value)
   }
 </script>

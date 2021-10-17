@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store'
 
-import {settingsStore} from './settingsStore'
+import { settingsStore } from './settingsStore'
 
 const periodical = (x, sideCapacity) => {
   if (x < 0) {
@@ -39,13 +39,13 @@ export const countNeighbors = (state, x, y) => {
   return neighborsCount
 }
 
-const isGoingLive = (state, x, y) =>  {
+const isGoingLive = (state, x, y) => {
   const cell = state[x][y]
   const isAlive = cell === 1
   const neighborsCount = countNeighbors(state, x, y)
 
   if (isAlive) {
-    return neighborsCount === 2 || neighborsCount === 3 
+    return neighborsCount === 2 || neighborsCount === 3
   }
 
   return neighborsCount === 3
@@ -71,22 +71,22 @@ const generateNewState = ({ rows, columns, lifeChance }) => {
 
     for (let j = 0; j < rows; j++) {
       state[i][j] = Math.random() < lifeChance ? 1 : 0
-    } 
+    }
   }
 
-  return state;
+  return state
 }
 
 function createLifeStateStore() {
-  const {subscribe, set, update} = writable([]);
-  const settingsState = get(settingsStore);
+  const { subscribe, set, update } = writable([])
+  const settingsState = get(settingsStore)
 
   return {
     subscribe,
     generateNewPopulation: () => {
       set(
         generateNewState(
-          { rows: settingsState.rows, columns: settingsState.columns, lifeChance: settingsState.lifeChance},
+          { rows: settingsState.rows, columns: settingsState.columns, lifeChance: settingsState.lifeChance },
         )
       )
     },
@@ -96,11 +96,11 @@ function createLifeStateStore() {
     clear: () => {
       set(
         generateNewState(
-          { rows: settingsState.rows, columns: settingsState.columns, lifeChance: 0},
+          { rows: settingsState.rows, columns: settingsState.columns, lifeChance: 0 },
         )
       )
     }
   }
 }
 
-export const lifeStateStore = createLifeStateStore();
+export const lifeStateStore = createLifeStateStore()
