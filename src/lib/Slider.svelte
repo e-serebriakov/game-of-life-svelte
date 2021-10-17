@@ -1,22 +1,18 @@
 <script>
-import { onMount } from "svelte";
-
-  export let onChange = () => {};
+  export let onChange = (_value) => {};
   export let value = 1;
-  let sliderInput;
 
-  onMount(() => {
-    sliderInput.oninput = function() {
-      onChange(this.value)
-    }
-  })
+  const handleChange = (event) => {
+    const value = parseInt(event.target.value, 10);
+    onChange(value)
+  }
 </script>
 
 <div class="container">
   <span class="left-label">
     <slot name="leftLabel"></slot>
   </span>
-  <input type="range" min="1" max="100" value={value} class="slider" bind:this={sliderInput}>
+  <input type="range" min="1" max="100" {value} class="slider" on:change={handleChange}>
   <span class="right-label">
     <slot name="rightLabel"></slot>
   </span>

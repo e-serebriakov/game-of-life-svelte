@@ -1,6 +1,5 @@
 <script>
   import { onMount } from 'svelte'
-  import { drawState } from '../state'
   import SettingsPanel from './SettingsPanel.svelte'
   import {settingsStore} from '../stores/settingsStore'
   import {lifeStateStore} from '../stores/lifeStateStore'
@@ -15,10 +14,25 @@
   $: updateRate = 1 / $settingsStore.updateRate * 1000
 
   const draw = (state) => {
-    drawState(state, $settingsStore.cellSize, canvas)
+    const context = canvas.getContext('2d')
+    const cellSize = $settingsStore.cellSize
+
+    state.forEach((row, i) => {
+      row.forEach((column, j) => {
+        context.clearRect(i * cellSize, j * cellSize, cellSize, cellSize)
+
+        if (column) {
+          context.fillStyle = $settingsStore.liveCellColor
+          context.fillRect(i * cellSize, j * cellSize, cellSize, cellSize)
+        } else {
+          context.strokeStyle = $settingsStore.gridColor
+          context.strokeRect(i * cellSize, j * cellSize, cellSize, cellSize)
+        }
+      })
+    })
   }
 
-  const start = () => {
+  const startEvolution = () => {
     timerId = setTimeout(function tick() {
       lifeStateStore.evolve();
       clearTimeout(timerId)
@@ -26,7 +40,7 @@
     }, updateRate)
   }
 
-  const stop = () => {
+  const stopEvolution = () => {
     if (timerId) clearTimeout(timerId);
   }
 
@@ -40,8 +54,10 @@
     lifeStateStore.generateNewPopulation()
 
     unsubscribeSettingsStore = settingsStore.subscribe((settings) => {
-      if (settings.paused) stop()
-      else start()
+      if (settings.paused) stopEvolution()
+      else startEvolution()
+
+      draw($lifeStateStore) // TODO: Is it ok to redraw on every settings change?
     })
 
     unsubscribeLifeStateStore = lifeStateStore.subscribe(draw)
