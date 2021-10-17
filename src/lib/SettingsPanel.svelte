@@ -12,7 +12,7 @@
   }
 
   const regenerate = () => {
-    lifeStateStore.setNewLifeWithCellLifeChance($settingsStore.lifeChance)
+    lifeStateStore.generateNewPopulation()
   }
 
   const clearState = () => {

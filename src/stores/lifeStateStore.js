@@ -83,10 +83,10 @@ function createLifeStateStore() {
 
   return {
     subscribe,
-    setNewLifeWithCellLifeChance: (lifeChance) => {
+    generateNewPopulation: () => {
       set(
         generateNewState(
-          { rows: settingsState.rows, columns: settingsState.columns, lifeChance},
+          { rows: settingsState.rows, columns: settingsState.columns, lifeChance: settingsState.lifeChance},
         )
       )
     },

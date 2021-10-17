@@ -37,16 +37,14 @@
     $settingsStore.rows = Math.floor(canvas.height / $settingsStore.cellSize);
     $settingsStore.columns = Math.floor(canvas.width / $settingsStore.cellSize);
 
-    lifeStateStore.setNewLifeWithCellLifeChance($settingsStore.lifeChance)
+    lifeStateStore.generateNewPopulation()
 
     unsubscribeSettingsStore = settingsStore.subscribe((settings) => {
       if (settings.paused) stop()
       else start()
     })
 
-    unsubscribeLifeStateStore = lifeStateStore.subscribe((state) => {
-      draw(state);
-    })
+    unsubscribeLifeStateStore = lifeStateStore.subscribe(draw)
 
     return () => {
       unsubscribeSettingsStore()
