@@ -1,13 +1,12 @@
 <script>
   import { onMount } from 'svelte'
-  import SettingsPanel from './SettingsPanel.svelte'
-  import {settingsStore} from '../stores/settingsStore'
-  import {lifeStateStore} from '../stores/lifeStateStore'
+  import { settingsStore } from '../stores/settingsStore'
+  import { lifeStateStore } from '../stores/lifeStateStore'
 
   let canvas
   let timerId
-  let height = window.innerHeight
-  let width = window.innerWidth
+  const height = window.innerHeight
+  const width = window.innerWidth
   let unsubscribeSettingsStore = () => {}
   let unsubscribeLifeStateStore = () => {}
 
@@ -34,22 +33,22 @@
 
   const startEvolution = () => {
     timerId = setTimeout(function tick() {
-      lifeStateStore.evolve();
+      lifeStateStore.evolve()
       clearTimeout(timerId)
-      timerId = setTimeout(tick, updateRate);
+      timerId = setTimeout(tick, updateRate)
     }, updateRate)
   }
 
   const stopEvolution = () => {
-    if (timerId) clearTimeout(timerId);
+    if (timerId) clearTimeout(timerId)
   }
 
   onMount(() => {
     canvas.height = height
     canvas.width = width
 
-    $settingsStore.rows = Math.floor(canvas.height / $settingsStore.cellSize);
-    $settingsStore.columns = Math.floor(canvas.width / $settingsStore.cellSize);
+    $settingsStore.rows = Math.floor(canvas.height / $settingsStore.cellSize)
+    $settingsStore.columns = Math.floor(canvas.width / $settingsStore.cellSize)
 
     lifeStateStore.generateNewPopulation()
 
@@ -69,7 +68,6 @@
   })
 </script>
 
-<SettingsPanel />
 <canvas class="canvas" bind:this={canvas}></canvas>
 
 <style>

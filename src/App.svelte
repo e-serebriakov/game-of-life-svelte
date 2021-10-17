@@ -1,9 +1,11 @@
 <script>
-  import Canvas from './lib/Canvas.svelte';
+  import Canvas from './lib/Canvas.svelte'
+  import SettingsPanel from './lib/SettingsPanel.svelte'
 </script>
 
 <main>
   <Canvas />
+  <SettingsPanel />
 </main>
 
 <style>

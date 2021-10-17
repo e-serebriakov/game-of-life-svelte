@@ -1,8 +1,8 @@
 <script>
   import Slider from './Slider.svelte'
-  import {settingsStore} from '../stores/settingsStore';
-  import { lifeStateStore } from '../stores/lifeStateStore';
-  import ColorPicker from './ColorPicker.svelte';
+  import { settingsStore } from '../stores/settingsStore'
+  import { lifeStateStore } from '../stores/lifeStateStore'
+  import ColorPicker from './ColorPicker.svelte'
 
   const handleSpeedChange = (value) => {
     $settingsStore.updateRate = value

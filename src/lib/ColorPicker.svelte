@@ -1,7 +1,7 @@
 <script>
-  export let onChange = (_value) => {};
+  export let onChange = (_value) => {}
   export let label = ''
-  export let value;
+  export let value
 
   const handleChange = (event) => {
     onChange(event.target.value)
