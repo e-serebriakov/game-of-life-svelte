@@ -24,7 +24,7 @@
         if (column) {
           context.fillStyle = $settingsStore.liveCellColor
           context.fillRect(i * cellSize, j * cellSize, cellSize, cellSize)
-        } else {
+        } else if ($settingsStore.gridShown) {
           context.strokeStyle = $settingsStore.gridColor
           context.strokeRect(i * cellSize, j * cellSize, cellSize, cellSize)
         }

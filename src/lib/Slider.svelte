@@ -1,41 +1,17 @@
 <script>
   export let onChange = (_value) => {}
   export let value = 1
+  export let id
 
   const handleChange = (event) => {
-    const value = parseInt(event.target.value, 10)
-    onChange(value)
+    onChange(parseInt(event.target.value, 10))
   }
 </script>
 
-<div class="container">
-  <span class="left-label">
-    <slot name="leftLabel"></slot>
-  </span>
-  <input type="range" min="1" max="100" {value} class="slider" on:change={handleChange}>
-  <span class="right-label">
-    <slot name="rightLabel"></slot>
-  </span>
-</div>
+<input {id} type="range" min="1" max="100" {value} on:change={handleChange}>
 
 <style>
-  .container {
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
-
-  .left-label {
-    display: inline-block;
-    margin-right: 8px;
-  }
-
-  .right-label {
-    display: inline-block;
-    margin-left: 8px;
-  }
-
-  .slider {
+  input {
     -webkit-appearance: none;
     width: 100%;
     height: 5px;
@@ -47,11 +23,11 @@
     transition: opacity .2s;
   }
 
-  .slider:hover {
+  input:hover {
     opacity: 1;
   }
 
-  .slider::-webkit-slider-thumb {
+  input::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 15px;
@@ -61,7 +37,7 @@
     cursor: pointer;
   }
 
-  .slider::-moz-range-thumb {
+  input::-moz-range-thumb {
     width: 15px;
     height: 15px;
     border-radius: 50%;

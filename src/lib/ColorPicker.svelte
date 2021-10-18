@@ -1,26 +1,19 @@
 <script>
-  export let onChange = (_value) => {}
-  export let label = ''
-  export let value
+  import { debounce } from '../utils/debounce'
 
-  const handleChange = (event) => {
+  export let onChange = (_event) => {}
+  export let value
+  export let id
+
+  const handleChange = debounce((event) => {
     onChange(event.target.value)
-  }
+  }, 100)
 </script>
 
-<div class="wrapper">
-  <span>{label}</span>
-  <input class="input" type="color" on:change={handleChange} {value} />
-</div>
+<input {id} {value} type="color" on:input={handleChange} />
 
 <style>
-  .wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .input {
+  input {
     width: 64px;
   }
 </style>
