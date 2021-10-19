@@ -80,7 +80,7 @@ const generateNewState = ({ rows, columns, lifeChance }) => {
 export const lifePrevStateStore = writable([])
 
 function createLifeStateStore(initialState) {
-  const { subscribe, set, update } = writable({
+  const { subscribe, update } = writable({
     prevState: initialState,
     currentState: initialState
   })
@@ -112,11 +112,12 @@ function createLifeStateStore(initialState) {
       })
     },
     clear: () => {
-      set(state => {
-        state.prevState = [...state.currentState]
+      update(state => {
+        state.prevState = JSON.parse(JSON.stringify(state.currentState))
         state.currentState = generateNewState(
           { rows: settingsState.rows, columns: settingsState.columns, lifeChance: 0 },
         )
+
         return state
       })
     }
