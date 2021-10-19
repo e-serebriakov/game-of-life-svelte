@@ -2,6 +2,8 @@ import { writable, get } from 'svelte/store'
 
 import { settingsStore } from './settingsStore'
 
+const copyState = (state) => state.map((column) => [...column])
+
 const periodical = (x, sideCapacity) => {
   if (x < 0) {
     return x + sideCapacity
@@ -52,7 +54,7 @@ const isGoingLive = (state, x, y) => {
 }
 
 export const calculateNextState = (currentState) => {
-  const state = JSON.parse(JSON.stringify(currentState)) // copy state TODO: think about optimization
+  const state = copyState(currentState)
 
   for (let i = 0; i < currentState.length; i++) {
     for (let j = 0; j < currentState[i].length; j++) {
@@ -98,7 +100,7 @@ function createLifeStateStore(initialState) {
     },
     toggleCellLifeState: (rowIndex, columnIndex) => {
       update((state) => {
-        state.prevState = JSON.parse(JSON.stringify(state.currentState))
+        state.prevState = copyState(state.currentState)
         state.currentState[columnIndex][rowIndex] = state.currentState[columnIndex][rowIndex] === 1 ? 0 : 1
 
         return state
@@ -113,7 +115,7 @@ function createLifeStateStore(initialState) {
     },
     clear: () => {
       update(state => {
-        state.prevState = JSON.parse(JSON.stringify(state.currentState))
+        state.prevState = [...state.currentState]
         state.currentState = generateNewState(
           { rows: settingsState.rows, columns: settingsState.columns, lifeChance: 0 },
         )
