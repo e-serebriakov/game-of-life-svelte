@@ -3,30 +3,29 @@
   import { settingsStore } from '../stores/settingsStore'
   import { lifeStateStore } from '../stores/lifeStateStore'
 
-  let canvas
-  let timerId
-  let mouseClicked = false
   const height = window.innerHeight
   const width = window.innerWidth
+  let lifeCanvas
+  let timerId
+  let mouseClicked = false
   let unsubscribeSettingsStore = () => {}
   let unsubscribeLifeStateStore = () => {}
 
   $: updateRate = 1 / $settingsStore.updateRate * 1000
 
-  const draw = (state) => {
-    const context = canvas.getContext('2d')
+  const drawLife = (state) => {
+    const context = lifeCanvas.getContext('2d')
     const cellSize = $settingsStore.cellSize
 
-    state.forEach((row, i) => {
+    state.currentState.forEach((row, i) => {
       row.forEach((column, j) => {
-        context.clearRect(i * cellSize, j * cellSize, cellSize, cellSize)
+        if (state.prevState[i] && state.prevState[i][j] === column && !column) return
 
         if (column) {
           context.fillStyle = $settingsStore.liveCellColor
           context.fillRect(i * cellSize, j * cellSize, cellSize, cellSize)
-        } else if ($settingsStore.gridShown) {
-          context.strokeStyle = $settingsStore.gridColor
-          context.strokeRect(i * cellSize, j * cellSize, cellSize, cellSize)
+        } else {
+          context.clearRect(i * cellSize, j * cellSize, cellSize, cellSize)
         }
       })
     })
@@ -95,22 +94,20 @@
   }
 
   onMount(() => {
-    canvas.height = height
-    canvas.width = width
+    lifeCanvas.height = height
+    lifeCanvas.width = width
 
-    $settingsStore.rows = Math.floor(canvas.height / $settingsStore.cellSize)
-    $settingsStore.columns = Math.floor(canvas.width / $settingsStore.cellSize)
+    $settingsStore.rows = Math.floor(lifeCanvas.height / $settingsStore.cellSize)
+    $settingsStore.columns = Math.floor(lifeCanvas.width / $settingsStore.cellSize)
 
     lifeStateStore.generateNewPopulation()
 
     unsubscribeSettingsStore = settingsStore.subscribe((settings) => {
       if (settings.paused) stopEvolution()
       else startEvolution()
-
-      draw($lifeStateStore) // TODO: Is it ok to redraw on every settings change?
     })
 
-    unsubscribeLifeStateStore = lifeStateStore.subscribe(draw)
+    unsubscribeLifeStateStore = lifeStateStore.subscribe(drawLife)
 
     return () => {
       unsubscribeSettingsStore()
@@ -120,15 +117,14 @@
 </script>
 
 <canvas
-  class="canvas"
-  bind:this={canvas}
-  on:mousedown={handleMouseDown}
-  on:mousemove={handleMouseMove}
-  on:mouseup={handleMouseUp}
+    bind:this={lifeCanvas}
+    on:mousedown={handleMouseDown}
+    on:mousemove={handleMouseMove}
+    on:mouseup={handleMouseUp}
 ></canvas>
 
 <style>
-  .canvas {
+  canvas {
     background-color: #000;
   }
 </style>

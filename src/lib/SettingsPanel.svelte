@@ -3,7 +3,6 @@
   import { settingsStore } from '../stores/settingsStore'
   import { lifeStateStore } from '../stores/lifeStateStore'
   import ColorPicker from './ColorPicker.svelte'
-  import Checkbox from './Checkbox.svelte'
 
   const handleSpeedChange = (value) => {
     $settingsStore.updateRate = value
@@ -11,10 +10,6 @@
 
   const handleCellColorChange = (value) => {
     $settingsStore.liveCellColor = value
-  }
-
-  const handleGridColorChange = (value) => {
-    $settingsStore.gridColor = value
   }
 
   const toggleRun = () => {
@@ -42,18 +37,6 @@
     <label for="cell-color">Cell color</label>
     <ColorPicker id="cell-color" value={$settingsStore.liveCellColor} onChange={handleCellColorChange} />
   </div>
-
-  <div>
-    <label for="grid-show">Show grid</label>
-    <Checkbox id="grid-show" bind:value={$settingsStore.gridShown} />
-  </div>
-
-  {#if $settingsStore.gridShown}
-    <div class="color">
-      <label for="grid-color">Grid color</label>
-      <ColorPicker id="grid-color" value={$settingsStore.gridColor} onChange={handleGridColorChange} />
-    </div>
-  {/if}
 
   <button on:click={toggleRun}>
     {#if $settingsStore.paused}
