@@ -77,37 +77,50 @@ const generateNewState = ({ rows, columns, lifeChance }) => {
   return state
 }
 
-function createLifeStateStore() {
-  const { subscribe, set, update } = writable([])
+export const lifePrevStateStore = writable([])
+
+function createLifeStateStore(initialState) {
+  const { subscribe, set, update } = writable({
+    prevState: initialState,
+    currentState: initialState
+  })
   const settingsState = get(settingsStore)
 
   return {
     subscribe,
     generateNewPopulation: () => {
-      set(
-        generateNewState(
+      update(state => {
+        state.currentState = generateNewState(
           { rows: settingsState.rows, columns: settingsState.columns, lifeChance: settingsState.lifeChance },
         )
-      )
+        return state
+      })
     },
     toggleCellLifeState: (rowIndex, columnIndex) => {
-      update((currentState) => {
-        currentState[columnIndex][rowIndex] = currentState[columnIndex][rowIndex] === 1 ? 0 : 1
+      update((state) => {
+        state.prevState = JSON.parse(JSON.stringify(state.currentState))
+        state.currentState[columnIndex][rowIndex] = state.currentState[columnIndex][rowIndex] === 1 ? 0 : 1
 
-        return currentState
+        return state
       })
     },
     evolve: () => {
-      update(calculateNextState)
+      update(state => {
+        state.prevState = [...state.currentState]
+        state.currentState = calculateNextState(state.currentState)
+        return state
+      })
     },
     clear: () => {
-      set(
-        generateNewState(
+      set(state => {
+        state.prevState = [...state.currentState]
+        state.currentState = generateNewState(
           { rows: settingsState.rows, columns: settingsState.columns, lifeChance: 0 },
         )
-      )
+        return state
+      })
     }
   }
 }
 
-export const lifeStateStore = createLifeStateStore()
+export const lifeStateStore = createLifeStateStore([[]])
