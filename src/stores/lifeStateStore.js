@@ -79,6 +79,8 @@ const generateNewState = ({ rows, columns, lifeChance }) => {
   return state
 }
 
+const generateEmptyState = ({ rows, columns }) => generateNewState({ rows, columns, lifeChance: 0 })
+
 export const lifePrevStateStore = writable([])
 
 function createLifeStateStore(initialState) {
@@ -92,9 +94,11 @@ function createLifeStateStore(initialState) {
     subscribe,
     generateNewPopulation: () => {
       update(state => {
+        state.prevState = copyState(state.currentState)
         state.currentState = generateNewState(
           { rows: settingsState.rows, columns: settingsState.columns, lifeChance: settingsState.lifeChance },
         )
+
         return state
       })
     },
@@ -108,16 +112,17 @@ function createLifeStateStore(initialState) {
     },
     evolve: () => {
       update(state => {
-        state.prevState = [...state.currentState]
+        state.prevState = copyState(state.currentState)
         state.currentState = calculateNextState(state.currentState)
+
         return state
       })
     },
     clear: () => {
       update(state => {
-        state.prevState = [...state.currentState]
-        state.currentState = generateNewState(
-          { rows: settingsState.rows, columns: settingsState.columns, lifeChance: 0 },
+        state.prevState = copyState(state.currentState)
+        state.currentState = generateEmptyState(
+          { rows: settingsState.rows, columns: settingsState.columns },
         )
 
         return state
