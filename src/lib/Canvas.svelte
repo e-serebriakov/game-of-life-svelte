@@ -11,7 +11,7 @@
   let unsubscribeSettingsStore = () => {}
   let unsubscribeLifeStateStore = () => {}
 
-  $: updateRate = 1 / $settingsStore.updateRate * 1000
+  $: updateRate = (1 / $settingsStore.updateRate) * 1000
 
   const drawLife = (state) => {
     const context = lifeCanvas.getContext('2d')
@@ -19,7 +19,9 @@
 
     state.currentState.forEach((row, i) => {
       row.forEach((column, j) => {
-        if (state.prevState[i] && state.prevState[i][j] === column && !column) return
+        if (state.prevState[i] && state.prevState[i][j] === column) {
+          return
+        }
 
         if (column) {
           context.fillStyle = $settingsStore.liveCellColor
@@ -44,12 +46,12 @@
   }
 
   const getRowAndColumnFromCoords = (x, y) => {
-    const rowIndex = Math.floor(y / height * $settingsStore.rows)
-    const columnIndex = Math.floor(x / width * $settingsStore.columns)
+    const rowIndex = Math.floor((y / height) * $settingsStore.rows)
+    const columnIndex = Math.floor((x / width) * $settingsStore.columns)
 
     return {
       rowIndex,
-      columnIndex
+      columnIndex,
     }
   }
 
@@ -88,7 +90,10 @@
   }
 
   const toggleCellLifeState = (rowIndex, columnIndex) => {
-    if (rowIndex <= $settingsStore.rows + 1 && columnIndex <= $settingsStore.columns + 1) {
+    if (
+      rowIndex <= $settingsStore.rows + 1 &&
+      columnIndex <= $settingsStore.columns + 1
+    ) {
       lifeStateStore.toggleCellLifeState(rowIndex, columnIndex)
     }
   }
@@ -97,8 +102,12 @@
     lifeCanvas.height = height
     lifeCanvas.width = width
 
-    $settingsStore.rows = Math.floor(lifeCanvas.height / $settingsStore.cellSize)
-    $settingsStore.columns = Math.floor(lifeCanvas.width / $settingsStore.cellSize)
+    $settingsStore.rows = Math.floor(
+      lifeCanvas.height / $settingsStore.cellSize
+    )
+    $settingsStore.columns = Math.floor(
+      lifeCanvas.width / $settingsStore.cellSize
+    )
 
     lifeStateStore.generateNewPopulation()
 
@@ -117,11 +126,11 @@
 </script>
 
 <canvas
-    bind:this={lifeCanvas}
-    on:mousedown={handleMouseDown}
-    on:mousemove={handleMouseMove}
-    on:mouseup={handleMouseUp}
-></canvas>
+  bind:this={lifeCanvas}
+  on:mousedown={handleMouseDown}
+  on:mousemove={handleMouseMove}
+  on:mouseup={handleMouseUp}
+/>
 
 <style>
   canvas {
