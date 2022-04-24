@@ -17,14 +17,11 @@
     const context = lifeCanvas.getContext('2d')
     const cellSize = $settingsStore.cellSize
 
+    context.fillStyle = $settingsStore.liveCellColor
+
     state.currentState.forEach((row, i) => {
       row.forEach((column, j) => {
-        if (state.prevState[i] && state.prevState[i][j] === column) {
-          return
-        }
-
         if (column) {
-          context.fillStyle = $settingsStore.liveCellColor
           context.fillRect(i * cellSize, j * cellSize, cellSize, cellSize)
         } else {
           context.clearRect(i * cellSize, j * cellSize, cellSize, cellSize)
